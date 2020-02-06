@@ -57,7 +57,7 @@ class LongTypeConverter : TypeConverter<Long>() {
      */
     private fun Float.toLongChecked(): Long = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Long.MIN_VALUE..Long.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Long.MIN_VALUE.toFloat()..Long.MAX_VALUE.toFloat()) -> throw NUMERIC_OVERFLOW
         else -> toLong()
     }
 
@@ -69,7 +69,7 @@ class LongTypeConverter : TypeConverter<Long>() {
      */
     private fun Double.toLongChecked(): Long = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Long.MIN_VALUE..Long.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Long.MIN_VALUE.toDouble()..Long.MAX_VALUE.toDouble()) -> throw NUMERIC_OVERFLOW
         else -> toLong()
     }
 

@@ -68,7 +68,7 @@ class IntTypeConverter : TypeConverter<Int>() {
      */
     private fun Float.toIntChecked(): Int = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Int.MIN_VALUE..Int.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Int.MIN_VALUE.toFloat()..Int.MAX_VALUE.toFloat()) -> throw NUMERIC_OVERFLOW
         else -> toInt()
     }
 
@@ -80,7 +80,7 @@ class IntTypeConverter : TypeConverter<Int>() {
      */
     private fun Double.toIntChecked(): Int = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Int.MIN_VALUE..Int.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Int.MIN_VALUE.toDouble()..Int.MAX_VALUE.toDouble()) -> throw NUMERIC_OVERFLOW
         else -> toInt()
     }
 

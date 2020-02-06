@@ -83,7 +83,7 @@ class CharTypeConverter : TypeConverter<Char>() {
      */
     private fun Float.toCharChecked(): Char = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Short.MIN_VALUE..Short.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Short.MIN_VALUE.toFloat()..Short.MAX_VALUE.toFloat()) -> throw NUMERIC_OVERFLOW
         else -> toChar()
     }
 
@@ -95,7 +95,7 @@ class CharTypeConverter : TypeConverter<Char>() {
      */
     private fun Double.toCharChecked(): Char = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Short.MIN_VALUE..Short.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Short.MIN_VALUE.toDouble()..Short.MAX_VALUE.toDouble()) -> throw NUMERIC_OVERFLOW
         else -> toChar()
     }
 

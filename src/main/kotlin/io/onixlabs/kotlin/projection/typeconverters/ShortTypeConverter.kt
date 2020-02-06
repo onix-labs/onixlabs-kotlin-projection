@@ -77,7 +77,7 @@ class ShortTypeConverter : TypeConverter<Short>() {
      */
     private fun Float.toShortChecked(): Short = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Short.MIN_VALUE..Short.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Short.MIN_VALUE.toFloat()..Short.MAX_VALUE.toFloat()) -> throw NUMERIC_OVERFLOW
         else -> toShort()
     }
 
@@ -89,7 +89,7 @@ class ShortTypeConverter : TypeConverter<Short>() {
      */
     private fun Double.toShortChecked(): Short = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Short.MIN_VALUE..Short.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Short.MIN_VALUE.toDouble()..Short.MAX_VALUE.toDouble()) -> throw NUMERIC_OVERFLOW
         else -> toShort()
     }
 

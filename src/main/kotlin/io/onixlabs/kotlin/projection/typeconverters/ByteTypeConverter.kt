@@ -88,7 +88,7 @@ class ByteTypeConverter : TypeConverter<Byte>() {
      */
     private fun Float.toByteChecked(): Byte = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Byte.MIN_VALUE..Byte.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Byte.MIN_VALUE.toFloat()..Byte.MAX_VALUE.toFloat()) -> throw NUMERIC_OVERFLOW
         else -> toByte()
     }
 
@@ -100,7 +100,7 @@ class ByteTypeConverter : TypeConverter<Byte>() {
      */
     private fun Double.toByteChecked(): Byte = when {
         (!isInteger()) -> throw NUMERIC_LOSS_OF_PRECISION
-        (this !in Byte.MIN_VALUE..Byte.MAX_VALUE) -> throw NUMERIC_OVERFLOW
+        (this !in Byte.MIN_VALUE.toDouble()..Byte.MAX_VALUE.toDouble()) -> throw NUMERIC_OVERFLOW
         else -> toByte()
     }
 
