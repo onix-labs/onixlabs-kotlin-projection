@@ -19,6 +19,8 @@ package io.onixlabs.kotlin.projection
 import io.onixlabs.kotlin.core.reflection.getPrimaryConstructor
 import io.onixlabs.kotlin.core.reflection.getPropertyOrNull
 import io.onixlabs.kotlin.core.reflection.kotlinClass
+import io.onixlabs.kotlin.core.typeconverters.IllegalTypeConversionException
+import io.onixlabs.kotlin.core.typeconverters.TypeConverter
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.jvmErasure
@@ -171,20 +173,12 @@ class ProjectionBuilder<T : Any, R : Any>(
      */
     private fun initializeContextMap(): MutableMap<String, ProjectionContext> {
         return targetClass.getPrimaryConstructor().parameters.map {
-
-            val name = it.name ?: throw IllegalStateException("Illegal state. Cannot map unnamed parameters.")
+            val name = it.name ?: throw IllegalStateException("Cannot project the specified un-named parameter: $it.")
             val property = subject.kotlinClass.getPropertyOrNull(name)
             val value = property?.get(subject)
             val typeConverter = getTypeConverter(it.type.jvmErasure, property?.returnType?.jvmErasure)
 
-            name to ProjectionContext(
-                parameterName = name,
-                isMarkedNullable = it.type.isMarkedNullable,
-                isOptional = it.isOptional,
-                value = value,
-                typeConverter = typeConverter
-            )
-
+            name to ProjectionContext(it, typeConverter, value)
         }.toMap().toMutableMap()
     }
 
@@ -205,15 +199,16 @@ class ProjectionBuilder<T : Any, R : Any>(
      * @throws IllegalArgumentException if the parameter is not a parameter of the target object's constructor.
      */
     private fun setTypeConverter(name: String, typeConverter: TypeConverter<*>, value: Any? = Ignored) {
-        if (!contextMap.containsKey(name)) {
-            throw IllegalArgumentException("Target type does not contain a constructor parameter named '$name'")
-        }
+        val context = contextMap[name]
+            ?: throw IllegalArgumentException("Target type does not contain a constructor parameter named '$name'")
 
-        if (value == Ignored) {
-            contextMap.replace(name, contextMap[name]!!.copy(typeConverter = typeConverter))
-        } else {
-            contextMap.replace(name, contextMap[name]!!.copy(typeConverter = typeConverter, value = value))
-        }
+        val newContext = ProjectionContext(
+            context.parameter,
+            typeConverter,
+            if (value == Ignored) context.value else value
+        )
+
+        contextMap.replace(name, newContext)
     }
 
     /**

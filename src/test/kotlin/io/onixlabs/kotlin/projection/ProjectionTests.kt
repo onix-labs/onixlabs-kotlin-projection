@@ -2,6 +2,8 @@ package io.onixlabs.kotlin.projection
 
 import io.onixlabs.kotlin.core.EMPTY
 import io.onixlabs.kotlin.core.reflection.kotlinClass
+import io.onixlabs.kotlin.core.typeconverters.IllegalTypeConversionException
+import io.onixlabs.kotlin.core.typeconverters.TypeConverter
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -144,7 +146,7 @@ class ProjectionTests {
 
         // Assert
         assertEquals(
-            "Projection failed. Cannot map null to non-nullable and non-optional parameter 'a'.",
+            "Cannot project 'null' to the specified non-optional and non-nullable parameter: 'a'.",
             result.message
         )
     }
@@ -264,7 +266,7 @@ class ProjectionTests {
 
         // Assert
         assertEquals(
-            "Projection failed. Cannot map null to non-nullable and non-optional parameter 'a'.",
+            "Cannot project 'null' to the specified non-optional and non-nullable parameter: 'a'.",
             result.message
         )
     }
