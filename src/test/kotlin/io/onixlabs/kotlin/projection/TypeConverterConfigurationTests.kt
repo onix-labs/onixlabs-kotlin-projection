@@ -1,6 +1,6 @@
 package io.onixlabs.kotlin.projection
 
-import io.onixlabs.kotlin.projection.typeconverters.*
+import io.onixlabs.kotlin.core.typeconverters.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

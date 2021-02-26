@@ -16,22 +16,23 @@
 
 package io.onixlabs.kotlin.projection
 
+import io.onixlabs.kotlin.core.reflection.formattedQualifiedName
+import io.onixlabs.kotlin.core.reflection.kotlinClass
+import io.onixlabs.kotlin.core.typeconverters.TypeConverter
+import kotlin.reflect.KParameter
+
 /**
  * Represents a projection context.
  *
- * @param parameterName The name of the target parameter for which to provide a value.
- * @param isMarkedNullable Determines whether the target parameter is marked nullable.
- * @param isOptional Determines whether the target parameter is optional.
+ * @param parameter The parameter to project.
  * @param value The value to convert.
- * @param typeConverter The type converter that will be used to convert the specified value.
+ * @param converter The type converter that will be used to convert the specified value.
  */
-internal data class ProjectionContext(
-    val parameterName: String,
-    val isMarkedNullable: Boolean,
-    val isOptional: Boolean,
-    val value: Any?,
-    val typeConverter: TypeConverter<*>
-) {
+internal class ProjectionContext(val parameter: KParameter, val converter: TypeConverter<*>, val value: Any?) {
+
+    private val parameterName: String = parameter.name
+        ?: throw IllegalArgumentException("Cannot project the specified un-named parameter: $parameter")
+
     /**
      * Gets a converted map entry pair for the specified parameter.
      *
@@ -43,11 +44,27 @@ internal data class ProjectionContext(
      * @throws ProjectionException if the value is null and the parameter is non-nullable and non-optional.
      */
     fun getConvertedMapEntryOrNull(): Pair<String, Any?>? = when {
-        value != null -> parameterName to typeConverter.convert(value)
-        isOptional -> null
-        isMarkedNullable -> parameterName to null
-        else -> throw ProjectionException(
-            "Projection failed. Cannot map null to non-nullable and non-optional parameter '$parameterName'."
-        )
+        value != null -> parameterName to getConvertedValue(value)
+        parameter.isOptional -> null
+        parameter.type.isMarkedNullable -> parameterName to null
+        else -> throw ProjectionException("Cannot project '$value' to the specified non-optional and non-nullable parameter: '$parameterName'.")
+    }
+
+    /**
+     * Converts the value for projection.
+     *
+     * @param value The value to convert.
+     * @return Returns the converted value.
+     * @throws ProjectionException if the value could not be converted.
+     */
+    private fun getConvertedValue(value: Any): Any? = try {
+        converter.convert(value)
+    } catch (throwable: Throwable) {
+        val fromTypeName = value.kotlinClass.qualifiedName
+        val toTypeName = parameter.type.formattedQualifiedName
+        throw ProjectionException(buildString {
+            append("Projection failed for the specified parameter: $parameterName. ")
+            append("Could not convert from '$fromTypeName' to '$toTypeName'.")
+        }, throwable)
     }
 }
