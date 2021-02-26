@@ -4,6 +4,14 @@
 
 This document serves as the change log for the ONIXLabs Kotlin Projection API.
 
+## Version 2.0.0
+
+### Type Converters
+
+The ONIXLabs Kotlin Projection API no longer contains the type converter implementation as it's been moved to ONIXLabs Kotlin Core.
+
+This change also improves the exception output with more descriptive exception information.
+
 ## Version 1.0.0
 
 #### IllegalTypeConversionException (class)
