@@ -17,7 +17,7 @@
 package io.onixlabs.kotlin.projection
 
 import io.onixlabs.kotlin.core.reflection.createInstance
-import io.onixlabs.kotlin.projection.typeconverters.*
+import io.onixlabs.kotlin.core.typeconverters.*
 import sun.security.x509.ReasonFlags.UNUSED
 import java.math.BigDecimal
 import java.math.BigInteger
